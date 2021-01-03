@@ -1,5 +1,8 @@
-  -- node box {x=0, y=0, z=0}
-  node_box = {
+
+local S = minetest.get_translator("skeletons");
+  
+-- node box {x=0, y=0, z=0}
+local node_box = {
     type = "fixed",
     fixed = {
       {-0.0625,-0.375,-0.4375,0.0625,-0.3125,-0.1875},
@@ -44,4 +47,7 @@
       {-0.0625,-0.3125,0.3125,0.0625,-0.25,0.375},
       {-0.0625,-0.375,0.375,0.0625,-0.3125,0.4375},
     },
-  },
+  }
+
+skeletons.register_skeleton("bunny_skeleton", S("bunny skeleton"), node_box)
+

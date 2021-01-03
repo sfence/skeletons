@@ -76,25 +76,113 @@ print("Nodes size is: {}x{}x{}".format(nodes_x, nodes_y, nodes_z));
 
 node_boxes = "";
 
-def generate_node_box(x, y, z, schema): 
-  node_box = "  -- node box {{x={}, y={}, z={}}}\n".format(x, y, z);
+def check_names_in_area(schema, name, from_x, to_x, from_y, to_y, from_z, to_z):
+  checked = [];
+  for z in range(from_z, to_z+1):
+    for y in range(from_y, to_y+1):
+      for x in range(from_x, to_x+1):
+        index = z*256+y*16+x;
+        if (schema[index]!=name):
+          return None;
+        checked.append(index);
+  return checked;
+
+class Box_Area:
+  def __init__(self, schema, b_x, b_y, b_z):
+    index = b_z*256+b_y*16+b_x;
+    name = schema[index];
+    self.indexes = [index];
+    
+    self.from_x = self.to_x = b_x;
+    self.from_y = self.to_y = b_y;
+    self.from_z = self.to_z = b_z;
+    # first try x direction
+    x = self.from_x-1;
+    while x>=0:
+      index = b_z*256+b_y*16+x;
+      # only same materials can be merged
+      if (schema[index]!=name):
+        break;
+      self.from_x = x;
+      self.indexes.append(index);
+      x = self.from_x - 1;
+    
+    x = self.to_x + 1;
+    while x<16:
+      index = b_z*256+b_y*16+x;
+      # only same materials can be merged
+      if (schema[index]!=name):
+        break;
+      self.to_x = x;
+      self.indexes.append(index);
+      x = self.to_x + 1;
+    
+    # second try y direction
+    y = self.from_y-1;
+    while y>=0:
+      checked = check_names_in_area(schema, name, self.from_x, self.to_x, y, y, self.from_z, self.to_z);
+      # if check failed, break
+      if not checked:
+        break;
+      self.from_y = y;
+      self.indexes.extend(checked);
+      y = self.from_y - 1;
+    
+    y = self.to_y+1;
+    while y<16:
+      checked = check_names_in_area(schema, name, self.from_x, self.to_x, y, y, self.from_z, self.to_z);
+      # if check failed, break
+      if not checked:
+        break;
+      self.to_y = y;
+      self.indexes.extend(checked);
+      y = self.to_y + 1; 
+    
+    # last try z direction
+    z = self.from_z-1;
+    while z>=0:
+      checked = check_names_in_area(schema, name, self.from_x, self.to_x, self.from_y, self.to_y, z, z);
+      # if check failed, break
+      if not checked:
+        break;
+      self.from_z = z;
+      self.indexes.extend(checked);
+      z = self.from_z - 1;
+    
+    z = self.to_z+1;
+    while z<16:
+      checked = check_names_in_area(schema, name, self.from_x, self.to_x, self.from_y, self.to_y, z, z);
+      # if check failed, break
+      if not checked:
+        break;
+      self.to_z = z;
+      self.indexes.extend(checked);
+      z = self.to_z + 1; 
+
+def generate_node_box(node_x, node_y, node_z, schema): 
+  node_box = "  -- node box {{x={}, y={}, z={}}}\n".format(node_x, node_y, node_z);
   node_box = node_box + "  node_box = {\n";
   node_box = node_box + "    type = \"fixed\",\n";
   node_box = node_box + "    fixed = {\n";
   
-  for x in range(16):
+  for z in range(16):
     for y in range(16):
-      for z in range(16):
+      for x in range(16):
         node = schema[z*256+y*16+x];
         if node:
-          box_x = (x/16)-0.5;
-          box_y = (y/16)-0.5;
-          box_z = (z/16)-0.5;
+          box_area = Box_Area(schema, x, y, z);
+          
+          box_x = (box_area.from_x/16)-0.5;
+          box_y = (box_area.from_y/16)-0.5;
+          box_z = (box_area.from_z/16)-0.5;
           node_box = node_box + "      {{{},{},{},".format(box_x, box_y, box_z);
-          box_x = box_x + 1/16;
-          box_y = box_y + 1/16;
-          box_z = box_z + 1/16;
+          box_x = ((box_area.to_x+1)/16)-0.5;
+          box_y = ((box_area.to_y+1)/16)-0.5;
+          box_z = ((box_area.to_z+1)/16)-0.5;
           node_box = node_box + "{},{},{}}},\n".format(box_x, box_y, box_z);
+          
+          for index in box_area.indexes:
+            schema[index] = None;
 
   node_box = node_box + "    },\n";
   node_box = node_box + "  },\n";
