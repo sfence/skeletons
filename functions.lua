@@ -23,5 +23,24 @@ function skeletons.register_skeleton(name, desc, box)
     minetest.register_node("skeletons:model_"..name, table.copy(node_def))
     node_def.description = S("Colored model of").." "..desc;
     node_def.tiles = {"skeletons_model_colored.png"}
-    minetest.register_node("skeletons:colored_mode_"..name, table.copy(node_def))
+    minetest.register_node("skeletons:colored_model_"..name, table.copy(node_def))
+end
+
+function skeletons.register_skeleton_transform(origin, transformed, restorable)
+  local prefixes = {"fresh_", "fossil_", "model_", "colored_model_"};
+  
+  for key, value in pairs(prefixes) do
+    minetest.register_craft({
+        type = "shapeless",
+        output = "skeletons:"..value..transformed,
+        recipe = {"skeletons:"..value..origin},
+      });
+    if restorable then
+      minetest.register_craft({
+          type = "shapeless",
+          output = "skeletons:"..value..origin,
+          recipe = {"skeletons:"..value..transformed},
+        });
+    end
+  end
 end
