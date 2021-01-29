@@ -51,3 +51,15 @@ local node_box = {
 
 skeletons.register_skeleton("bunny_skeleton", S("bunny skeleton"), node_box)
 
+-- add bone drop
+if skeletons.have_animal then
+  local entity = minetest.registered_entities["mobs_animal:bunny"]
+  if (not entity) then
+    entity = minetest.registered_entities["hades_animals:bunny"]
+  end
+
+  if entity then
+    table.insert(entity.drops, {name = "skeletons:fresh_bunny_skeleton", chance = 1, min = 1, max = 1})
+  end
+end
+

@@ -14,7 +14,9 @@ function skeletons.register_skeleton(name, desc, box)
     }
     node_def.description = S("Fresh").." "..desc;
     node_def.tiles = {"skeletons_fresh_bone.png"};
-    minetest.register_node("skeletons:fresh_"..name, table.copy(node_def))
+    local fresh_node_def = table.copy(node_def);
+    fresh_node_def.groups.bone = 1; -- support for bonemeal
+    minetest.register_node("skeletons:fresh_"..name, fresh_node_def)
     node_def.description = S("Fossil").." "..desc;
     node_def.tiles = {"skeletons_fossil_bone.png"};
     minetest.register_node("skeletons:fossil_"..name, table.copy(node_def))

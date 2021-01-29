@@ -2,21 +2,17 @@ Minetest mod: skeletons
 =======================
 Mod which add skeletons of different animals to game.
 
-License of source code:
+Source code:
 -----------------------
-GPL 3 or newer
-
-Authors of source code:
------------------------
-SFENCE
+Copyright (c) 2021 SFENCE
+MIT - check LICENSE file
 
 License of media (textures, sounds and models):
 -----------------------------------------------
-CC-0
+CC BY-SA 4.0 - check LICENSE file
 
-Authors of media files:
------------------------
-SFENCE
+Copyright (c) 2021 SFENCE (CC BY-SA 4.0):
+All textures not mentioned below.
 
 Adding new skeletons:
 -----------------------
