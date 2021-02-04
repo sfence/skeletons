@@ -17,6 +17,7 @@ dofile(modpath.."/player/player_skeleton.lua")
 if skeletons.have_bones then
   dofile(modpath.."/player/bones.lua")
 end
+dofile(modpath.."/player/skulls.lua")
 
 dofile(modpath.."/villager/villager_skeleton.lua")
 

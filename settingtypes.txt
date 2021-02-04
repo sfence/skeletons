@@ -1,0 +1,31 @@
+
+# Method how players can get different skulls
+skeletons_skulls_get_method (Method how different skulls can be get) enum none none,eat,kills,chance
+
+# Enable logging
+skeletons_skulls_enable_log (Enable skull counters logging) bool false
+
+# How much eatpoints have player to eat, to drops modern skull instead of default one.
+skeletons_skull_modern_eat (How much must player eat to drop modern skull) int 100 0 3000000
+
+# How much meat have player to eat to drops gatherer skull instead of default on or modern one.
+skeletons_skull_gatherer_eat (How much meat must player eat to drop modern skull) int 1000 0 3000000
+
+# If enabled, player have to eat more meat then veger
+skeletons_skull_gatherer_no_vegetarian (When player eat non meat, make gatherer skull drops harder) bool true
+
+# Number of kills players do, to drop modern skull
+skeletons_skull_modern_kills (Number of kills to drop modern skull) int 10 0 3000000
+
+# Number of kills players do, to drop gatherer skull
+skeletons_skull_gatherer_kills (Nunber of kills to drop gatherer skull) int 100 0 3000000
+
+# Chance to drop modern skull from bones:bones, 1:value
+skeletons_skull_modern_chance (Chance to drop modern skull) int 10 0 1000000
+
+# Chance to drop gatherer skull from bones:bones, 1:value
+skeletons_skull_gatherer_chance (Chance to drop gatherer skull) int 100 0 1000000
+
+# Enable/disable reset of player skull counters when player die
+skeletons_skull_reset_on_die (Reset skull counter when player die) bool true
+
