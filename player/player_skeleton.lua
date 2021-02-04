@@ -465,12 +465,18 @@ for key, value in pairs(skulls) do
     table.insert(node_box_back_skull.fixed, box)
   end
   
-  skeletons.register_skeleton("player_skeleton_bottom"..name, S("part of player skeleton")..desc, node_box_bottom)
+  if (key=="") then
+    skeletons.register_skeleton("player_skeleton_bottom"..name, S("part of player skeleton")..desc, node_box_bottom)
+  end
   skeletons.register_skeleton("player_skeleton_top"..name, S("part of player skeleton")..desc, node_box_top_skull)
 
-  skeletons.register_skeleton("player_skeleton_front"..name, S("part of player lying skeleton")..desc, node_box_front)
+  if (key=="") then
+    skeletons.register_skeleton("player_skeleton_front"..name, S("part of player lying skeleton")..desc, node_box_front)
+  end
   skeletons.register_skeleton("player_skeleton_back"..name, S("part of player lying skeleton")..desc, node_box_back_skull)
 
-  skeletons.register_skeleton_transform("player_skeleton_bottom"..name, "player_skeleton_front"..name, true)
+  if (key=="") then
+    skeletons.register_skeleton_transform("player_skeleton_bottom"..name, "player_skeleton_front"..name, true)
+  end
   skeletons.register_skeleton_transform("player_skeleton_top"..name, "player_skeleton_back"..name, true)
 end
