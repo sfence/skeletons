@@ -125,8 +125,8 @@ def generate_obj(node_x, node_y, node_z, schema):
             vz = -15/32 + z/16 + side[2]/32;
             
             #if side[0]!=0:
-            vtx = 1/32 + y/16;
-            vty = 1/32 + z/16;
+            vtx = 1/32 + z/16;
+            vty = 1/32 + y/16;
             if side[1]!=0:
               vtx = 1/32 + x/16;
               vty = 1/32 + z/16;

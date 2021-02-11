@@ -214,10 +214,10 @@ local node_box_back = {
   }
 
 skeletons.register_skeleton("villager_skeleton_bottom", S("part of villager skeleton"), node_box_bottom)
-skeletons.register_skeleton("villager_skeleton_top", S("part of villager skeleton"), node_box_top)
+skeletons.register_skeleton("villager_skeleton_top", S("part of villager skeleton"), node_box_top, "human_skeleton_top.obj", {{"skeletons_fresh_human_skull.png"},{"skeletons_fossil_human_skull.png"},{"skeletons_model_human_skull.png"},{"skeletons_model_colored_human_skull.png"}})
 
 skeletons.register_skeleton("villager_skeleton_front", S("part of villager lying skeleton"), node_box_front)
-skeletons.register_skeleton("villager_skeleton_back", S("part of villager lying skeleton"), node_box_back)
+skeletons.register_skeleton("villager_skeleton_back", S("part of villager lying skeleton"), node_box_back, "human_skeleton_back.obj", {{"skeletons_fresh_human_skull.png"},{"skeletons_fossil_human_skull.png"},{"skeletons_model_human_skull.png"},{"skeletons_model_colored_human_skull.png"}})
 
 skeletons.register_skeleton_transform("villager_skeleton_bottom", "villager_skeleton_front", true)
 skeletons.register_skeleton_transform("villager_skeleton_top", "villager_skeleton_back", true)
