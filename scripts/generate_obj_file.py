@@ -53,6 +53,8 @@ def fit_to_16_min(value):
   rem = value % 16;
   return value - rem;
 def fit_to_16_max(value):
+  if value==0:
+    value = 1;
   rem = value % 16;
   if rem!=0:
     rem = 16 - rem;
@@ -105,7 +107,7 @@ def generate_obj(node_x, node_y, node_z, schema):
       variants = variants_all[1];
     if side[2]!=0:
       variants = variants_all[2];
-    vn = vn + "vn {} {} {}\n".format(side[0], side[1], side[2]);
+    vn = vn + "vn {} {} {}\n".format(-side[0], side[1], side[2]);
     vn_i = vn_i + 1;
     
     for z in range(16):
@@ -128,15 +130,15 @@ def generate_obj(node_x, node_y, node_z, schema):
             vtx = 1/32 + z/16;
             vty = 1/32 + y/16;
             if side[1]!=0:
-              vtx = 1/32 + x/16;
+              vtx = 1/32 + (15-x)/16;
               vty = 1/32 + z/16;
             if side[2]!=0:
-              vtx = 1/32 + x/16;
+              vtx = 1/32 + (15-x)/16;
               vty = 1/32 + y/16;
             
             v_n = [];
             for variant in variants:
-              h_v = "v {} {} {}\n".format(vx+variant[0], vy+variant[1], vz+variant[2]);
+              h_v = "v {} {} {}\n".format(-(vx-variant[0]), vy+variant[1], vz+variant[2]);
               if h_v not in v_d:
                 v = v + h_v;
                 v_d[h_v] = v_i;

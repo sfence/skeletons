@@ -53,6 +53,8 @@ def fit_to_16_min(value):
   rem = value % 16;
   return value - rem;
 def fit_to_16_max(value):
+  if value==0:
+    value = 1;
   rem = value % 16;
   if rem!=0:
     rem = 16 - rem;
