@@ -31,3 +31,5 @@ dofile(modpath.."/mobs_animal/warthog_skeleton.lua")
 dofile(modpath.."/mobs_animal/rat_skeleton.lua")
 dofile(modpath.."/mobs_animal/sheep_skeleton.lua")
 
+dofile(modpath.."/mob_horse/horse_skeleton.lua")
+
