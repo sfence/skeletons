@@ -3,8 +3,8 @@
 import sys
 import lupa
 
-if len(sys.argv)!=3:
-  print("Usage: generate_node_box.py schema_file output_file")
+if (len(sys.argv)!=3) and (len(sys.argv)!=4):
+  print("Usage: generate_node_box.py schema_file output_file [usemtl]")
   exit();
 
 schema_file = open(sys.argv[1], "r");
@@ -16,6 +16,11 @@ if schema.startswith("5:return {"):
 else:
   print("schema_file format is not supported.")
   exit();
+
+usemtl = False;
+if (len(sys.argv)==4) and (sys.argv[3]=="usemtl"):
+  usemtl = True;
+  print("Use diferent materials for diferent faces.");
   
 lua = lupa.LuaRuntime(unpack_returned_tuples=True)
 schema = dict(lua.eval(schema))
@@ -79,7 +84,7 @@ print("Nodes size is: {}x{}x{}".format(nodes_x, nodes_y, nodes_z));
 node_objs = "";
 
 def generate_obj(node_x, node_y, node_z, schema):  
-  check_sides = [[1,0,0],[0,1,0],[0,0,1],[-1,0,0],[0,-1,0],[0,0,-1]];
+  check_sides = [[0,1,0],[0,-1,0],[-1,0,0],[1,0,0],[0,0,1],[0,0,-1]];
   variants_all = [
       [[0, -1/32, -1/32],[0, -1/32, 1/32],[0, 1/32, 1/32],[0, 1/32, -1/32]],
       [[-1/32, 0, -1/32],[-1/32, 0, 1/32],[1/32, 0, 1/32],[1/32, 0, -1/32]],
@@ -109,6 +114,10 @@ def generate_obj(node_x, node_y, node_z, schema):
       variants = variants_all[2];
     vn = vn + "vn {} {} {}\n".format(-side[0], side[1], side[2]);
     vn_i = vn_i + 1;
+    
+    usemtl_mat = "";
+    if usemtl:
+      usemtl_mat = "_x_{}_y_{}_z_{}".format(side[0], side[1], side[2]);
     
     for z in range(16):
       for y in range(16):
@@ -149,6 +158,7 @@ def generate_obj(node_x, node_y, node_z, schema):
             for variant in tvariants:
               vt = vt + "vt {} {}\n".format(vtx+variant[0], vty+variant[1]);
 
+            f = f + "usemtl {}{}\n".format(node, usemtl_mat);
             f = f + "s {}\n".format(s_i);
             f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[0], vt_i, vn_i, v_n[1], vt_i+1, vn_i, v_n[2], vt_i+2, vn_i, v_n[3], vt_i+3, vn_i);
             
