@@ -3,8 +3,8 @@
 import sys
 import lupa
 
-if len(sys.argv)!=3:
-  print("Usage: generate_node_box.py schema_file output_file")
+if (len(sys.argv)!=3) and (len(sys.argv)!=4):
+  print("Usage: generate_node_box.py schema_file output_file [usemtl]")
   exit();
 
 schema_file = open(sys.argv[1], "r");
@@ -16,6 +16,11 @@ if schema.startswith("5:return {"):
 else:
   print("schema_file format is not supported.")
   exit();
+
+usemtl = False;
+if (len(sys.argv)==4) and (sys.argv[3]=="usemtl"):
+  usemtl = True;
+  print("Use different boxes for different materials into one box.");
   
 lua = lupa.LuaRuntime(unpack_returned_tuples=True)
 schema = dict(lua.eval(schema))
@@ -84,7 +89,9 @@ def check_names_in_area(schema, name, from_x, to_x, from_y, to_y, from_z, to_z):
     for y in range(from_y, to_y+1):
       for x in range(from_x, to_x+1):
         index = z*256+y*16+x;
-        if (schema[index]!=name):
+        if usemtl and (schema[index]!=name):
+          return None;
+        if (not usemtl) and (schema[index]==None):
           return None;
         checked.append(index);
   return checked;
@@ -102,8 +109,11 @@ class Box_Area:
     x = self.from_x-1;
     while x>=0:
       index = b_z*256+b_y*16+x;
+      # only filled nodes can be merged
+      if (schema[index]==None):
+        break;
       # only same materials can be merged
-      if (schema[index]!=name):
+      if usemtl and (schema[index]!=name):
         break;
       self.from_x = x;
       self.indexes.append(index);
@@ -112,8 +122,11 @@ class Box_Area:
     x = self.to_x + 1;
     while x<16:
       index = b_z*256+b_y*16+x;
+      # only filled nodes can be merged
+      if (schema[index]==None):
+        break;
       # only same materials can be merged
-      if (schema[index]!=name):
+      if usemtl and (schema[index]!=name):
         break;
       self.to_x = x;
       self.indexes.append(index);
