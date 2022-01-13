@@ -4,7 +4,7 @@ import sys
 import lupa
 
 if (len(sys.argv)!=3) and (len(sys.argv)!=4):
-  print("Usage: generate_node_box.py schema_file output_file [usemtl]")
+  print("Usage: generate_node_box.py schema_file output_file [facemtl]")
   exit();
 
 schema_file = open(sys.argv[1], "r");
@@ -18,9 +18,9 @@ else:
   exit();
 
 usemtl = False;
-if (len(sys.argv)==4) and (sys.argv[3]=="usemtl"):
+if (len(sys.argv)==4) and (sys.argv[3]=="facemtl"):
   usemtl = True;
-  print("Use diferent materials for diferent faces.");
+  print("Use different materials for diferent faces.");
   
 lua = lupa.LuaRuntime(unpack_returned_tuples=True)
 schema = dict(lua.eval(schema))
@@ -82,9 +82,14 @@ nodes_z = (size_z)//16;
 print("Nodes size is: {}x{}x{}".format(nodes_x, nodes_y, nodes_z));
 
 node_objs = "";
+  
+s_i = 1;
+v_i = 1;
+vt_i = 1;
+vn_i = 0;
 
 def generate_obj(node_x, node_y, node_z, schema):  
-  check_sides = [[0,1,0],[0,-1,0],[-1,0,0],[1,0,0],[0,0,1],[0,0,-1]];
+  check_sides = [[0,1,0],[0,-1,0],[1,0,0],[-1,0,0],[0,0,-1],[0,0,1]];
   variants_all = [
       [[0, -1/32, -1/32],[0, -1/32, 1/32],[0, 1/32, 1/32],[0, 1/32, -1/32]],
       [[-1/32, 0, -1/32],[-1/32, 0, 1/32],[1/32, 0, 1/32],[1/32, 0, -1/32]],
@@ -97,10 +102,10 @@ def generate_obj(node_x, node_y, node_z, schema):
   vn = "";
   f = "";
   
-  s_i = 1;
-  v_i = 1;
-  vt_i = 1;
-  vn_i = 0;
+  global s_i;
+  global v_i;
+  global vt_i;
+  global vn_i;
   
   v_d = {};
   
@@ -160,7 +165,10 @@ def generate_obj(node_x, node_y, node_z, schema):
 
             f = f + "usemtl {}{}\n".format(node, usemtl_mat);
             f = f + "s {}\n".format(s_i);
-            f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[0], vt_i, vn_i, v_n[1], vt_i+1, vn_i, v_n[2], vt_i+2, vn_i, v_n[3], vt_i+3, vn_i);
+            if (vn_i%2)==1:
+              f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[0], vt_i, vn_i, v_n[1], vt_i+1, vn_i, v_n[2], vt_i+2, vn_i, v_n[3], vt_i+3, vn_i);
+            else:
+              f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[3], vt_i+3, vn_i, v_n[2], vt_i+2, vn_i, v_n[1], vt_i+1, vn_i, v_n[0], vt_i+0, vn_i);
             
             s_i = s_i + 1;
             vt_i = vt_i + 4;
