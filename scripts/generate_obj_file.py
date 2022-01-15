@@ -3,8 +3,8 @@
 import sys
 import lupa
 
-if (len(sys.argv)!=3) and (len(sys.argv)!=4):
-  print("Usage: generate_node_box.py schema_file output_file [facemtl]")
+if (len(sys.argv)<3):
+  print("Usage: generate_node_box.py schema_file output_file [facemtl] [rawfaces]")
   exit();
 
 schema_file = open(sys.argv[1], "r");
@@ -18,9 +18,14 @@ else:
   exit();
 
 usemtl = False;
-if (len(sys.argv)==4) and (sys.argv[3]=="facemtl"):
-  usemtl = True;
-  print("Use different materials for diferent faces.");
+rawfaces = False;
+for arg in range(3,len(sys.argv)):
+  if (sys.argv[arg]=="facemtl"):
+    usemtl = True;
+    print("Use different materials for diferent faces.");
+  elif sys.argv[arg]=="rawfaces":
+    rawfaces = True;
+    print("Use raw faces without merging.");
   
 lua = lupa.LuaRuntime(unpack_returned_tuples=True)
 schema = dict(lua.eval(schema))
@@ -111,12 +116,16 @@ def generate_obj(node_x, node_y, node_z, schema):
   
   for side in check_sides:
     variants = [];
+    layer_axis = None
     if side[0]!=0:
       variants = variants_all[0];
+      layer_axis = 0
     if side[1]!=0:
       variants = variants_all[1];
+      layer_axis = 1
     if side[2]!=0:
       variants = variants_all[2];
+      layer_axis = 2
     vn = vn + "vn {} {} {}\n".format(-side[0], side[1], side[2]);
     vn_i = vn_i + 1;
     
@@ -124,54 +133,171 @@ def generate_obj(node_x, node_y, node_z, schema):
     if usemtl:
       usemtl_mat = "_x_{}_y_{}_z_{}".format(side[0], side[1], side[2]);
     
-    for z in range(16):
-      for y in range(16):
-        for x in range(16):
-          node   = schema[z*256+y*16+x];
-          side_x = x + side[0];
-          side_y = y + side[1];
-          side_z = z + side[2];
-          node_side = None;
-          if (side_x>=0) and (side_y>=0) and (side_z>=0) and (side_x<16) and (side_y<16) and (side_z<16) :
-            node_side = schema[(z+side[2])*256+(y+side[1])*16+(x+side[0])]
-          
-          if (node!=None) and (node_side==None):
-            vx = -15/32 + x/16 + side[0]/32;
-            vy = -15/32 + y/16 + side[1]/32;
-            vz = -15/32 + z/16 + side[2]/32;
+    if rawfaces:
+      for z in range(16):
+        for y in range(16):
+          for x in range(16):
+            node   = schema[z*256+y*16+x];
+            side_x = x + side[0];
+            side_y = y + side[1];
+            side_z = z + side[2];
+            node_side = None;
+            if (side_x>=0) and (side_y>=0) and (side_z>=0) and (side_x<16) and (side_y<16) and (side_z<16) :
+              node_side = schema[(z+side[2])*256+(y+side[1])*16+(x+side[0])]
             
-            #if side[0]!=0:
-            vtx = 1/32 + z/16;
-            vty = 1/32 + y/16;
-            if side[1]!=0:
-              vtx = 1/32 + (15-x)/16;
-              vty = 1/32 + z/16;
-            if side[2]!=0:
-              vtx = 1/32 + (15-x)/16;
+            if (node!=None) and (node_side==None):
+              face = {}
+              
+              vx = -15/32 + x/16 + side[0]/32;
+              vy = -15/32 + y/16 + side[1]/32;
+              vz = -15/32 + z/16 + side[2]/32;
+              
+              #if side[0]!=0:
+              vtx = 1/32 + z/16;
               vty = 1/32 + y/16;
-            
-            v_n = [];
-            for variant in variants:
-              h_v = "v {} {} {}\n".format(-(vx-variant[0]), vy+variant[1], vz+variant[2]);
-              if h_v not in v_d:
-                v = v + h_v;
-                v_d[h_v] = v_i;
-                v_i = v_i + 1;
+              if side[1]!=0:
+                vtx = 1/32 + (15-x)/16;
+                vty = 1/32 + z/16;
+              if side[2]!=0:
+                vtx = 1/32 + (15-x)/16;
+                vty = 1/32 + y/16;
               
-              v_n.append(v_d[h_v]);
-              
-            for variant in tvariants:
-              vt = vt + "vt {} {}\n".format(vtx+variant[0], vty+variant[1]);
+              v_n = [];
+              for variant in variants:
+                h_v = "v {} {} {}\n".format(-(vx-variant[0]), vy+variant[1], vz+variant[2]);
+                if h_v not in v_d:
+                  v = v + h_v;
+                  v_d[h_v] = v_i;
+                  v_i = v_i + 1;
+                
+                v_n.append(v_d[h_v]);
+                
+              for variant in tvariants:
+                vt = vt + "vt {} {}\n".format(vtx+variant[0], vty+variant[1]);
 
-            f = f + "usemtl {}{}\n".format(node, usemtl_mat);
-            f = f + "s {}\n".format(s_i);
-            if (vn_i%2)==1:
-              f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[0], vt_i, vn_i, v_n[1], vt_i+1, vn_i, v_n[2], vt_i+2, vn_i, v_n[3], vt_i+3, vn_i);
-            else:
-              f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[3], vt_i+3, vn_i, v_n[2], vt_i+2, vn_i, v_n[1], vt_i+1, vn_i, v_n[0], vt_i+0, vn_i);
+              f = f + "usemtl {}{}\n".format(node, usemtl_mat);
+              f = f + "s {}\n".format(s_i);
+              if (vn_i%2)==1:
+                f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[0], vt_i, vn_i, v_n[1], vt_i+1, vn_i, v_n[2], vt_i+2, vn_i, v_n[3], vt_i+3, vn_i);
+              else:
+                f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[3], vt_i+3, vn_i, v_n[2], vt_i+2, vn_i, v_n[1], vt_i+1, vn_i, v_n[0], vt_i+0, vn_i);
+              
+              s_i = s_i + 1;
+              vt_i = vt_i + 4;
+    else:
+      faces = [None] * (16*16*16);
+      for z in range(16):
+        for y in range(16):
+          for x in range(16):
             
-            s_i = s_i + 1;
-            vt_i = vt_i + 4;
+            node   = schema[z*256+y*16+x];
+            side_x = x + side[0];
+            side_y = y + side[1];
+            side_z = z + side[2];
+            node_side = None;
+            if (side_x>=0) and (side_y>=0) and (side_z>=0) and (side_x<16) and (side_y<16) and (side_z<16) :
+              node_side = schema[(z+side[2])*256+(y+side[1])*16+(x+side[0])]
+            
+            if (node!=None) and (node_side==None):
+              faces[z*256+y*16+x] = node
+    
+      for z in range(16):
+        for y in range(16):
+          for x in range(16):
+            node = faces[z*256+y*16+x]
+            if (node!=None):
+              # find part
+              pos_from = [x,y,z]
+              pos_to = [x,y,z]
+              first_axis = True
+              for axis in range(0,3):
+                if axis!=layer_axis:
+                  for test in range(pos_from[axis],16):
+                    pos_test = pos_to.copy()
+                    pos_test[axis] = test
+                    if first_axis:
+                      if faces[pos_test[2]*256+pos_test[1]*16+pos_test[0]]==node:
+                        pos_to[axis] = test
+                      else:
+                        first_axis = False
+                        break
+                    else:
+                      valid = True
+                      for tz in range(z,pos_test[2]+1):
+                        for ty in range(y,pos_test[1]+1):
+                          for tx in range(x,pos_test[0]+1):
+                            if faces[tz*256+ty*16+tx]!=node:
+                              valid = False
+                              break
+                      if valid:
+                        pos_to[axis] = test
+                      else:
+                        first_axis = False
+                        break
+                  
+                  first_axis = False
+              
+              v_n = [];
+              for variant in variants:
+                # from_pos part
+                vx = -15/32 + x/16 + side[0]/32;
+                vy = -15/32 + y/16 + side[1]/32;
+                vz = -15/32 + z/16 + side[2]/32;
+                if variant[0]<0:
+                  vx = -15/32 + pos_to[0]/16 + side[0]/32;
+                if variant[1]>0:
+                  vy = -15/32 + pos_to[1]/16 + side[1]/32;
+                if variant[2]>0:
+                  vz = -15/32 + pos_to[2]/16 + side[2]/32;
+              
+                h_v = "v {} {} {}\n".format(-(vx-variant[0]), vy+variant[1], vz+variant[2]);
+                if h_v not in v_d:
+                  v = v + h_v;
+                  v_d[h_v] = v_i;
+                  v_i = v_i + 1;
+                
+                v_n.append(v_d[h_v]);
+                
+              for variant in tvariants:
+                #if side[0]!=0:
+                vtx = 1/32 + z/16;
+                vty = 1/32 + y/16;
+                if variant[0]>0:
+                  vtx = 1/32 + pos_to[2]/16;
+                if variant[1]>0:
+                  vty = 1/32 + pos_to[1]/16;
+                if side[1]!=0:
+                  vtx = 1/32 + (15-x)/16;
+                  vty = 1/32 + z/16;
+                  if variant[0]<0:
+                    vtx = 1/32 + (15-pos_to[0])/16;
+                  if variant[1]>0:
+                    vty = 1/32 + pos_to[2]/16;
+                if side[2]!=0:
+                  vtx = 1/32 + (15-x)/16;
+                  vty = 1/32 + y/16;
+                  if variant[0]<0:
+                    vtx = 1/32 + (15-pos_to[0])/16;
+                  if variant[1]>0:
+                    vty = 1/32 + pos_to[1]/16;
+                
+                vt = vt + "vt {} {}\n".format(vtx+variant[0], vty+variant[1]);
+
+              f = f + "usemtl {}{}\n".format(node, usemtl_mat);
+              f = f + "s {}\n".format(s_i);
+              if (vn_i%2)==1:
+                f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[0], vt_i, vn_i, v_n[1], vt_i+1, vn_i, v_n[2], vt_i+2, vn_i, v_n[3], vt_i+3, vn_i);
+              else:
+                f = f + "f {}/{}/{} {}/{}/{} {}/{}/{} {}/{}/{}\n".format(v_n[3], vt_i+3, vn_i, v_n[2], vt_i+2, vn_i, v_n[1], vt_i+1, vn_i, v_n[0], vt_i+0, vn_i);
+              
+              s_i = s_i + 1;
+              vt_i = vt_i + 4;
+              
+              # erase added faces
+              for fz in range(z,pos_to[2]+1):
+                for fy in range(y,pos_to[1]+1):
+                  for fx in range(x,pos_to[0]+1):
+                    faces[fz*256+fy*16+fx] = None
   
   
   node_obj = "# node obj {{x={}, y={}, z={}}}\n".format(node_x, node_y, node_z);
