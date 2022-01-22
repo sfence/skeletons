@@ -153,8 +153,8 @@ def generate_obj(node_x, node_y, node_z, schema):
               vz = -15/32 + z/16 + side[2]/32;
               
               #if side[0]!=0:
-              vtx = 1/32 + z/16;
-              vty = 1/32 + y/16;
+              vtx = 1/32 + y/16;
+              vty = 1/32 + z/16;
               if side[1]!=0:
                 vtx = 1/32 + (15-x)/16;
                 vty = 1/32 + z/16;
@@ -260,12 +260,12 @@ def generate_obj(node_x, node_y, node_z, schema):
                 
               for variant in tvariants:
                 #if side[0]!=0:
-                vtx = 1/32 + z/16;
-                vty = 1/32 + y/16;
+                vtx = 1/32 + y/16;
+                vty = 1/32 + z/16;
                 if variant[0]>0:
-                  vtx = 1/32 + pos_to[2]/16;
+                  vtx = 1/32 + pos_to[1]/16;
                 if variant[1]>0:
-                  vty = 1/32 + pos_to[1]/16;
+                  vty = 1/32 + pos_to[2]/16;
                 if side[1]!=0:
                   vtx = 1/32 + (15-x)/16;
                   vty = 1/32 + z/16;
