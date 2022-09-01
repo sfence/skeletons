@@ -5,7 +5,7 @@ skeletons = {};
 local modname = minetest.get_current_modname();
 local modpath = minetest.get_modpath(modname);
 
-skeletons.have_bones = minetest.get_modpath("bones");
+skeletons.have_bones = minetest.get_modpath("bones") or minetest.get_modpath("hades_bones");
 skeletons.have_animal = minetest.get_modpath("mobs_animal");
 if (not skeletons.have_animal) then
   skeletons.have_animal = minetest.get_modpath("hades_animals");
