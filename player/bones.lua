@@ -82,7 +82,8 @@ else
 	end
   
   local function bones_on_punch(pos, node, player)
-      if not is_owner(pos, player:get_player_name()) then
+      local bones_owner = minetest.get_meta(pos):get_string("owner")
+      if bones_owner and bones_owner ~= "" and bones_owner ~= player:get_player_name() then
         return
       end
 
