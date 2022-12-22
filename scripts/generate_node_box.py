@@ -11,8 +11,8 @@ schema_file = open(sys.argv[1], "r");
 schema = schema_file.read();
 schema_file.close();
 
-if schema.startswith("5:return {"):
-  schema = schema[9:];
+if schema.startswith("5:"):
+  schema = schema[2:];
 else:
   print("schema_file format is not supported.")
   exit();
@@ -23,7 +23,8 @@ if (len(sys.argv)==4) and (sys.argv[3]=="usemtl"):
   print("Use different boxes for different materials into one box.");
   
 lua = lupa.LuaRuntime(unpack_returned_tuples=True)
-schema = dict(lua.eval(schema))
+lua.execute("function get_schema() {} end".format(schema))
+schema = dict(lua.eval("get_schema()"))
 
 min_x = None
 max_x = None
