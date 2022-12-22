@@ -83,7 +83,10 @@ else
   
   local function bones_on_punch(pos, node, player)
       local bones_owner = minetest.get_meta(pos):get_string("owner")
-      if bones_owner and bones_owner ~= "" and bones_owner ~= player:get_player_name() then
+      local player_name = player:get_player_name()
+      if      (bones_owner ~= "") 
+          and (bones_owner ~= player_name)
+          and (not minetest.check_player_privs(player_name, "protection_bypass")) then
         return
       end
 
