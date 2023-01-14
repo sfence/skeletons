@@ -70,6 +70,7 @@ else
 		local meta = minetest.get_meta(pos)
 		if meta:get_inventory():is_empty("main") then
       local drops = minetest.get_node_drops(bones_node_name, nil)
+      local player_inv = player:get_inventory()
       for _,drop_item in pairs(drops) do
         if player_inv:room_for_item("main", ItemStack(drop_item)) then
           player_inv:add_item("main", ItemStack(drop_item))
