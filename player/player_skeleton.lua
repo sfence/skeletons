@@ -457,11 +457,11 @@ for key, value in pairs(skulls) do
   end
   
   local node_box_top_skull = table.copy(node_box_top);
-  for index, box in pairs(value[1]) do
+  for _, box in pairs(value[1]) do
     table.insert(node_box_top_skull.fixed, box)
   end
   local node_box_back_skull = table.copy(node_box_back);
-  for index, box in pairs(value[2]) do
+  for _, box in pairs(value[2]) do
     table.insert(node_box_back_skull.fixed, box)
   end
   

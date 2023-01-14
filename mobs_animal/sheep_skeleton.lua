@@ -111,7 +111,7 @@ if skeletons.have_animal then
     "violet", "white", "yellow"
   };
   
-  for index, value in pairs(colors) do
+  for _, value in pairs(colors) do
     local entity = minetest.registered_entities["mobs_animal:sheep_"..value]
     if (not entity) then
       entity = minetest.registered_entities["hades_animals:sheep_"..value]

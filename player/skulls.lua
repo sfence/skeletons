@@ -7,7 +7,7 @@ local skulls_get_method = minetest.settings:get("skeletons_skulls_get_method") o
 local skull_reset_on_die = minetest.settings:get_bool("skeletons_skull_reset_on_die", true)
 local skulls_enable_log = minetest.settings:get_bool("skeletons_skulls_enable_log", false)
 
-local log = function (text)
+local log = function (_text)
 end
 if (skulls_enable_log) then
   log = function (text)
@@ -51,7 +51,7 @@ if (skulls_get_method=="eat") then
       meat_eat = 0,
     };
   
-  minetest.register_on_item_eat(function(hp_change, replace_with_item, itemstack, user, pointed_thing)
+  minetest.register_on_item_eat(function(hp_change, _replace_with_item, itemstack, user, _pointed_thing)
       local player_name = user:get_player_name();
       if (player_name~="") then
         local player_counters = storage:get_string(player_name);
@@ -83,7 +83,7 @@ if (skulls_get_method=="eat") then
         storage:set_string(player_name, minetest.serialize(player_counters))
       end
     end)
-  minetest.register_on_dieplayer(function(object, reason) 
+  minetest.register_on_dieplayer(function(object, _reason)
       local player_name = object:get_player_name();
       if (player_name~="") then
         -- get coutners
@@ -107,7 +107,7 @@ if (skulls_get_method=="eat") then
         if skull_reset_on_die then
           log(player_name.." counters reseted.");
           storage:set_string(player_name, minetest.serialize(counters))
-        end 
+        end
       end
     end)
   
@@ -124,12 +124,12 @@ if (skulls_get_method=="eat") then
 elseif (skulls_get_method=="kills") then
   -- get skulls by player kills
   local skull_modern_kills = tonumber(minetest.settings:get("skeletons_skull_modern_kills")) or 10
-  local skull_gatherer_kills = tonumber(minetest.settings:get("skeletons_skull_gatherer_kills")) or 100 
+  local skull_gatherer_kills = tonumber(minetest.settings:get("skeletons_skull_gatherer_kills")) or 100
   local counters = {
       kills = 0,
     };
   
-  minetest.register_on_dieplayer(function(object, reason) 
+  minetest.register_on_dieplayer(function(object, reason)
       local player_name = object:get_player_name();
       if (player_name~="") then
         -- get coutners
@@ -157,7 +157,7 @@ elseif (skulls_get_method=="kills") then
         if skull_reset_on_die then
           log(player_name.." counters reseted.");
           storage:set_string(player_name, minetest.serialize(counters))
-        end 
+        end
         
         -- killer
         if (reason.type == "punch") then
@@ -197,7 +197,7 @@ elseif (skulls_get_method=="kills") then
 elseif (skulls_get_method=="chance") then
   -- get skulls by chance
   local skull_modern_chance = tonumber(minetest.settings:get("skeletons_skull_modern_chance")) or 10
-  local skull_gatherer_chance = tonumber(minetest.settings:get("skeletons_skull_gatherer_chance")) or 100 
+  local skull_gatherer_chance = tonumber(minetest.settings:get("skeletons_skull_gatherer_chance")) or 100
   
   if skeletons.have_bones then
     minetest.override_item("bones:bones", {
@@ -212,7 +212,7 @@ elseif (skulls_get_method=="chance") then
             { items = {"skeletons:fresh_player_skeleton_top"},
               rarity = 1},
           },
-        }, 
+        },
       });
   else
     minetest("warning", "[Mod] Skeletons: Dropping skulls by chance have no effect because bones mod has not been found.")

@@ -1,9 +1,9 @@
 
-local S = minetest.get_translator("skeletons")
+--local S = minetest.get_translator("skeletons")
 
 local skulls_get_method = minetest.settings:get("skeletons_skulls_get_method") or "none"
 
-local default_bones = minetest.get_modpath("bones")
+--local default_bones = minetest.get_modpath("bones")
 local hades_bones = minetest.get_modpath("hades_bones")
 
 local bones_node_name = "bones:bones"
@@ -20,12 +20,12 @@ if skulls_get_method=="none" then
         items = {
           {items = {"skeletons:fresh_player_skeleton_bottom", "skeletons:fresh_player_skeleton_top"}},
         },
-      }, 
+      },
     });
 end
 
 if hades_bones then
-  -- update bones callbacks for better fix 
+  -- update bones callbacks for better fix
   local bones_def = minetest.registered_nodes[bones_node_name];
   local old_on_metadata_inventory_take = bones_def.on_metadata_inventory_take;
   local old_on_punch = bones_def.on_punch;
@@ -40,7 +40,7 @@ if hades_bones then
         
         local drops = minetest.get_node_drops(bones_node_name, nil);
         if drops then
-          for key, value in pairs(drops) do
+          for _, value in pairs(drops) do
             local item_stack = ItemStack(value);
             if inv:room_for_item("main", item_stack) then
               inv:add_item("main", item_stack)
@@ -66,7 +66,7 @@ if hades_bones then
 else
   -- default bones
   
-  local function bones_on_metadata_inventory_take (pos, listname, index, stack, player)
+  local function bones_on_metadata_inventory_take (pos, _listname, _index, _stack, player)
 		local meta = minetest.get_meta(pos)
 		if meta:get_inventory():is_empty("main") then
       local drops = minetest.get_node_drops(bones_node_name, nil)
@@ -85,7 +85,7 @@ else
   local function bones_on_punch(pos, node, player)
       local bones_owner = minetest.get_meta(pos):get_string("owner")
       local player_name = player:get_player_name()
-      if      (bones_owner ~= "") 
+      if      (bones_owner ~= "")
           and (bones_owner ~= player_name)
           and (not minetest.check_player_privs(player_name, "protection_bypass")) then
         return

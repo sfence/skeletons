@@ -2,7 +2,7 @@
 local S = minetest.get_translator("skeletons");
   
 -- node box {x=0, y=1, z=0}
-node_box_head = {
+local node_box_head = {
   type = "fixed",
   fixed = {
     {-0.125,-0.4375,-0.125,0.0625,-0.375,0.1875},
@@ -36,7 +36,7 @@ node_box_head = {
   },
 }
 -- node box {x=0, y=0, z=1}
-node_box_front_bottom = {
+local node_box_front_bottom = {
   type = "fixed",
   fixed = {
     {-0.4375,0.25,-0.4375,-0.3125,0.3125,-0.3125},
@@ -102,7 +102,7 @@ node_box_front_bottom = {
   },
 }
 -- node box {x=0, y=0, z=2}
-node_box_back_bottom = {
+local node_box_back_bottom = {
   type = "fixed",
   fixed = {
     {-0.375,-0.5,0.0,-0.3125,-0.375,0.125},
@@ -131,7 +131,7 @@ node_box_back_bottom = {
   },
 }
 -- node box {x=0, y=1, z=1}
-node_box_front_top = {
+local node_box_front_top = {
   type = "fixed",
   fixed = {
     {-0.125,-0.5,-0.4375,0.0625,-0.4375,-0.375},
@@ -217,7 +217,7 @@ node_box_front_top = {
   },
 }
 -- node box {x=0, y=1, z=2}
-node_box_back_top = {
+local node_box_back_top = {
   type = "fixed",
   fixed = {
     {-0.125,-0.25,-0.4375,0.0625,-0.1875,-0.375},

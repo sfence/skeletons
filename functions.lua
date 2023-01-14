@@ -17,7 +17,7 @@ function skeletons.register_skeleton(name, desc, box, obj_file, tiles)
       node_def.node_box = nil;
       node_def.mesh = obj_file;
     end
-    node_def.description = S("Fresh").." "..desc; 
+    node_def.description = S("Fresh").." "..desc;
     node_def.tiles = {"skeletons_fresh_bone.png"};
     if tiles then
       node_def.tiles = tiles[1];
@@ -48,7 +48,7 @@ end
 function skeletons.register_skeleton_transform(origin, transformed, restorable)
   local prefixes = {"fresh_", "fossil_", "model_", "colored_model_"};
   
-  for key, value in pairs(prefixes) do
+  for _, value in pairs(prefixes) do
     minetest.register_craft({
         type = "shapeless",
         output = "skeletons:"..value..transformed,
