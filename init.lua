@@ -1,5 +1,4 @@
 
-
 skeletons = {};
 
 local modname = minetest.get_current_modname();

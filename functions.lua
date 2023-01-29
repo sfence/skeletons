@@ -1,6 +1,9 @@
 
 local S = minetest.get_translator("skeletons");
 
+local register_fossilized_skeleton = minetest.settings:get_bool("skeletons_register_fossilized_skeleton", true)
+local register_model_skeleton = minetest.settings:get_bool("skeletons_register_model_skeleton", true)
+
 function skeletons.register_skeleton(name, desc, box, obj_file, tiles)
   local node_def = {
       drawtype = "nodebox",
@@ -30,23 +33,34 @@ function skeletons.register_skeleton(name, desc, box, obj_file, tiles)
     if tiles then
       node_def.tiles = tiles[2];
     end
-    minetest.register_node("skeletons:fossil_"..name, table.copy(node_def))
-    node_def.description = S("Model of").." "..desc;
-    node_def.tiles = {"skeletons_model.png"}
-    if tiles then
-      node_def.tiles = tiles[3];
+    if register_fossilized_skeleton then
+      minetest.register_node("skeletons:fossil_"..name, table.copy(node_def))
+      node_def.description = S("Model of").." "..desc;
+      node_def.tiles = {"skeletons_model.png"}
+      if tiles then
+        node_def.tiles = tiles[3];
+      end
     end
-    minetest.register_node("skeletons:model_"..name, table.copy(node_def))
-    node_def.description = S("Colored model of").." "..desc;
-    node_def.tiles = {"skeletons_model_colored.png"}
-    if tiles then
-      node_def.tiles = tiles[4];
+    if register_model_skeleton then
+      minetest.register_node("skeletons:model_"..name, table.copy(node_def))
+      node_def.description = S("Colored model of").." "..desc;
+      node_def.tiles = {"skeletons_model_colored.png"}
+      if tiles then
+        node_def.tiles = tiles[4];
+      end
+      minetest.register_node("skeletons:colored_model_"..name, table.copy(node_def))
     end
-    minetest.register_node("skeletons:colored_model_"..name, table.copy(node_def))
 end
 
 function skeletons.register_skeleton_transform(origin, transformed, restorable)
-  local prefixes = {"fresh_", "fossil_", "model_", "colored_model_"};
+  local prefixes = {"fresh_"};
+  if register_fossilized_skeleton then
+    table.insert(prefixes, "fossil_")
+  end
+  if register_model_skeleton then
+    table.insert(prefixes, "model_")
+    table.insert(prefixes, "colored_model_")
+  end
   
   for _, value in pairs(prefixes) do
     minetest.register_craft({

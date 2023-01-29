@@ -29,3 +29,7 @@ skeletons_skull_gatherer_chance (Chance to drop gatherer skull) int 100 0 100000
 # Enable/disable reset of player skull counters when player die
 skeletons_skull_reset_on_die (Reset skull counter when player die) bool true
 
+# Enable/disable registration of fossilized skeletons
+skeletons_register_fossilized_skeleton (Register fossilized skeleton) bool true
+# Enable/disable registration of skeletons models
+skeletons_register_model_skeleton (Register model of skeleton) bool true
