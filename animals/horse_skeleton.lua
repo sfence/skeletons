@@ -354,10 +354,24 @@ skeletons.register_skeleton("horse_skeleton_back_bottom", S("part of horse skele
 skeletons.register_skeleton("horse_skeleton_back_top", S("part of horse skeleton"), node_box_back_top)
 
 -- add bone drop
-if skeletons.have_animal then
+if skeletons.have_horse then
   local entity = minetest.registered_entities["mob_horse:horse"]
   if (not entity) then
     entity = minetest.registered_entities["hades_horse:horse"]
+  end
+
+  if entity then
+    table.insert(entity.drops, {name = "skeletons:fresh_horse_skeleton_head", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_horse_skeleton_front_bottom", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_horse_skeleton_front_top", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_horse_skeleton_back_bottom", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_horse_skeleton_back_top", chance = 1, min = 1, max = 1})
+  end
+end
+if skeletons.have_animalia then
+  local entity = minetest.registered_entities["animalia:horse"]
+  if (not entity) then
+    entity = minetest.registered_entities["hades_animalia:horse"]
   end
 
   if entity then

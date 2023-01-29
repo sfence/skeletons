@@ -118,8 +118,20 @@ if skeletons.have_animal then
     end
 
     if entity then
-      table.insert(entity.drops, {name = "skeletons:fresh_warthog_skeleton_front", chance = 1, min = 1, max = 1})
-      table.insert(entity.drops, {name = "skeletons:fresh_warthog_skeleton_back", chance = 1, min = 1, max = 1})
+      table.insert(entity.drops, {name = "skeletons:fresh_sheep_skeleton_front", chance = 1, min = 1, max = 1})
+      table.insert(entity.drops, {name = "skeletons:fresh_sheep_skeleton_back", chance = 1, min = 1, max = 1})
     end
   end
 end
+if skeletons.have_animalia then
+  local entity = minetest.registered_entities["animalia:sheep"]
+  if (not entity) then
+    entity = minetest.registered_entities["hades_animalia:sheep"]
+  end
+
+  if entity then
+    table.insert(entity.drops, {name = "skeletons:fresh_sheep_skeleton_front", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_sheep_skeleton_back", chance = 1, min = 1, max = 1})
+  end
+end
+

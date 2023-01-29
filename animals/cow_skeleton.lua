@@ -294,4 +294,18 @@ if skeletons.have_animal then
     table.insert(entity.drops, {name = "skeletons:fresh_cow_skeleton_back_top", chance = 1, min = 1, max = 1})
   end
 end
+if skeletons.have_animalia then
+  local entity = minetest.registered_entities["animalia:cow"]
+  if (not entity) then
+    entity = minetest.registered_entities["hades_animalia:cow"]
+  end
+
+  if entity then
+    table.insert(entity.drops, {name = "skeletons:fresh_cow_skeleton_head", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_cow_skeleton_front_bottom", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_cow_skeleton_front_top", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_cow_skeleton_back_bottom", chance = 1, min = 1, max = 1})
+    table.insert(entity.drops, {name = "skeletons:fresh_cow_skeleton_back_top", chance = 1, min = 1, max = 1})
+  end
+end
 

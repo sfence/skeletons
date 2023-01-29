@@ -61,4 +61,14 @@ if skeletons.have_animal then
     table.insert(entity.drops, {name = "skeletons:fresh_chicken_skeleton", chance = 1, min = 1, max = 1})
   end
 end
+if skeletons.have_animalia then
+  local entity = minetest.registered_entities["animalia:chicken"]
+  if (not entity) then
+    entity = minetest.registered_entities["hades_animalia:chicken"]
+  end
+
+  if entity then
+    table.insert(entity.drops, {name = "skeletons:fresh_chicken_skeleton", chance = 1, min = 1, max = 1})
+  end
+end
 
