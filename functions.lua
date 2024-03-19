@@ -4,6 +4,36 @@ local S = minetest.get_translator("skeletons");
 local register_fossilized_skeleton = minetest.settings:get_bool("skeletons_register_fossilized_skeleton", true)
 local register_model_skeleton = minetest.settings:get_bool("skeletons_register_model_skeleton", true)
 
+local precise_selection_boxes = minetest.settings:get_bool("skeletons_precise_selection_boxes", true)
+
+local function choose_selection_box(box)
+  if precise_selection_boxes then
+    return box
+  else
+    local new_box = {
+      type = "fixed",
+      fixed = {
+        {0.5,0.5,0.5,-0.5,-0.5,-0.5}
+      }
+    }
+    for i = 1,3 do
+      for _,fixed in pairs(box.fixed) do
+        if fixed[i] < new_box.fixed[1][i] then
+          new_box.fixed[1][i] = fixed[i]
+        end
+      end
+    end
+    for i = 4,6 do
+      for _,fixed in pairs(box.fixed) do
+        if fixed[i] > new_box.fixed[1][i] then
+          new_box.fixed[1][i] = fixed[i]
+        end
+      end
+    end
+    return new_box
+  end
+end
+
 function skeletons.register_skeleton(name, desc, box, obj_file, tiles)
   local node_def = {
       drawtype = "nodebox",
@@ -12,7 +42,7 @@ function skeletons.register_skeleton(name, desc, box, obj_file, tiles)
       groups = {cracky=1},
       -- the nodebox model comes from realtest
       node_box = box,
-      selection_box = box,
+      selection_box = choose_selection_box(box),
       is_ground_content = false,
     }
     if obj_file then

@@ -33,3 +33,6 @@ skeletons_skull_reset_on_die (Reset skull counter when player die) bool true
 skeletons_register_fossilized_skeleton (Register fossilized skeleton) bool true
 # Enable/disable registration of skeletons models
 skeletons_register_model_skeleton (Register model of skeleton) bool true
+
+# Enable/disable precise selection boxes for skeletons.
+skeletons_precise_selection_boxes (Use precise selection boxes for skeletons) bool true
